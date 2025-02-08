@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaMoneyCheckAlt, FaCheckCircle, FaArrowLeft, FaMobileAlt, FaCreditCard, FaUniversity, FaMoneyBillWave } from "react-icons/fa";
+import { 
+    FaMoneyCheckAlt, FaCheckCircle, FaArrowLeft, 
+    FaMobileAlt, FaCreditCard, FaUniversity, FaMoneyBillWave 
+} from "react-icons/fa";
 import QRCode from "../assets/images/qr-code.png";
 
 const Payment = () => {
@@ -24,22 +27,29 @@ const Payment = () => {
     }, [cartItems]);
 
     const handleConfirmPayment = () => {
+        if (!paymentMethod) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+        const newOrder = {
+            id: Date.now(),
+            items: cartItems,
+            totalAmount: totalAmount,
+            status: "Paid",
+            paymentMethod: paymentMethod === "cod" ? "Cash on Delivery" : paymentMethod,
+            userDetails: userDetails,
+        };
+
+        const updatedOrders = [...storedOrders, newOrder];
+
+        localStorage.setItem("orders", JSON.stringify(updatedOrders));
+        localStorage.removeItem("cart");
+
         alert("Order Confirmed! Thank you for your purchase.");
         navigate("/");
-    };
-
-    const handleDebitCardChange = (e) => {
-        const { name, value } = e.target;
-        setDebitCardDetails({ ...debitCardDetails, [name]: value });
-    };
-
-    const handleNetBankingChange = (e) => {
-        setNetBankingAccount(e.target.value);
-    };
-
-    const handleUserDetailsChange = (e) => {
-        const { name, value } = e.target;
-        setUserDetails({ ...userDetails, [name]: value });
     };
 
     return (
@@ -54,6 +64,7 @@ const Payment = () => {
                 <div className="p-4 bg-white shadow-md rounded-lg text-lg font-semibold text-gray-700">
                     Total Amount: ₹{totalAmount.toFixed(2)}
                 </div>
+
                 <h2 className="text-xl font-semibold mt-4">Select Payment Method:</h2>
                 <div className="grid grid-cols-2 gap-4 my-4">
                     {["upi", "card", "netbanking", "cod"].map((method) => (
@@ -67,88 +78,14 @@ const Payment = () => {
                         </button>
                     ))}
                 </div>
+
                 {paymentMethod === "upi" && (
                     <div className="flex flex-col items-center">
                         <p className="text-gray-600 mb-4">Scan the QR code to complete your UPI payment:</p>
                         <img src={QRCode} alt="QR Code" className="w-40 h-40 object-contain" />
                     </div>
                 )}
-                {paymentMethod === "card" && (
-                    <div className="p-4 bg-white rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Enter Debit Card Details</h3>
-                        <input
-                            type="text"
-                            name="cardNumber"
-                            placeholder="Card Number"
-                            value={debitCardDetails.cardNumber}
-                            onChange={handleDebitCardChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                        <input
-                            type="text"
-                            name="expiryDate"
-                            placeholder="Expiry Date (MM/YY)"
-                            value={debitCardDetails.expiryDate}
-                            onChange={handleDebitCardChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                        <input
-                            type="text"
-                            name="cvv"
-                            placeholder="CVV"
-                            value={debitCardDetails.cvv}
-                            onChange={handleDebitCardChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                    </div>
-                )}
-                {paymentMethod === "netbanking" && (
-                    <div className="p-4 bg-white rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Select Bank and Enter Account Number</h3>
-                        <select className="w-full p-2 rounded border mb-2" onChange={(e) => setPaymentMethod(e.target.value)}>
-                            <option value="">Select Bank</option>
-                            {bankOptions.map((bank) => (
-                                <option key={bank} value={bank}>{bank}</option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            placeholder="Account Number"
-                            value={netBankingAccount}
-                            onChange={handleNetBankingChange}
-                            className="w-full p-2 rounded border"
-                        />
-                    </div>
-                )}
-                {paymentMethod === "cod" && (
-                    <div className="p-4 bg-white rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Enter Your Details</h3>
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Full Name"
-                            value={userDetails.name}
-                            onChange={handleUserDetailsChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                        <input
-                            type="text"
-                            name="address"
-                            placeholder="Delivery Address"
-                            value={userDetails.address}
-                            onChange={handleUserDetailsChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                        <input
-                            type="text"
-                            name="phone"
-                            placeholder="Phone Number"
-                            value={userDetails.phone}
-                            onChange={handleUserDetailsChange}
-                            className="w-full p-2 rounded border mb-2"
-                        />
-                    </div>
-                )}
+
                 <button onClick={handleConfirmPayment}
                     className="mt-6 bg-green-500 text-white p-3 rounded-lg w-full text-lg font-semibold shadow-lg flex items-center justify-center hover:bg-green-600 transition">
                     <FaCheckCircle className="mr-2" /> Confirm Payment
@@ -159,6 +96,7 @@ const Payment = () => {
 };
 
 export default Payment;
+
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { FaMoneyCheckAlt, FaCheckCircle, FaTag, FaCreditCard, FaMobileAlt, FaUniversity, FaMoneyBillWave, FaArrowLeft } from "react-icons/fa";
