@@ -1,6 +1,6 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useParams hook to get product ID from the URL
-import { FaShoppingCart } from 'react-icons/fa';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
 import image1 from '../assets/images/Image1.jpg';
 import image2 from '../assets/images/Image2.jpg';
 import image3 from '../assets/images/Image3.jpg';
@@ -23,10 +23,26 @@ import image19 from '../assets/images/Image19.jpg';
 import image20 from '../assets/images/Image20.jpg';
 
 const ProductDetails = () => {
-    const { id } = useParams(); // Get the product ID from the URL
-    const navigate = useNavigate(); // Used for navigation to cart page
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [reviews, setReviews] = useState([
+        { name: "John", rating: 5, text: "Absolutely delicious!" },
+        { name: "Emma", rating: 4, text: "Best cake I’ve ever had!" },
+        { name: "Liam", rating: 5, text: "Fantastic taste and texture!" },
+        { name: "Olivia", rating: 4, text: "Very good, but a bit too sweet for me." },
+        { name: "Noah", rating: 5, text: "Perfect cake for any occasion!" },
+        { name: "Ava", rating: 4, text: "Really enjoyed it!" },
+        { name: "Sophia", rating: 5, text: "Highly recommended!" },
+        { name: "Mason", rating: 5, text: "Would definitely buy again." },
+        { name: "Isabella", rating: 4, text: "Nice flavor and freshness." },
+        { name: "Ethan", rating: 5, text: "Superb quality!" },
+        { name: "Charlotte", rating: 4, text: "Loved it!" }
+    ]);
+    const [newReview, setNewReview] = useState('');
+    const [newReviewer, setNewReviewer] = useState('');
+    const [newRating, setNewRating] = useState(5);
+    const [showAllReviews, setShowAllReviews] = useState(false);
 
-    // Example products list (replace with dynamic data or API)
     const products = [
         { id: 1, category: 'cakes', name: 'Black Forest Cake', description: 'Classic black forest cake with cherries.', price: 750, image: image1 },
         { id: 2, category: 'cakes', name: 'Red Velvet Cake', description: 'Rich red velvet cake with cream cheese frosting.', price: 850, image: image2 },
@@ -51,58 +67,49 @@ const ProductDetails = () => {
     ];
 
     const product = products.find((p) => p.id.toString() === id);
+    if (!product) return <p className="text-center text-red-600">Product not found</p>;
 
-    if (!product) {
-        return <p>Product not found</p>;
-    }
-
-    // Add the product to the cart
     const addToCart = () => {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingProductIndex = cart.findIndex(item => item.id === product.id);
-        
-        if (existingProductIndex >= 0) {
-            // Product already in the cart, update quantity
-            cart[existingProductIndex].quantity += 1;
-        } else {
-            // Product not in the cart, add new item
-            const newProduct = { ...product, quantity: 1 };
-            cart.push(newProduct);
-        }
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push({ ...product, quantity: 1 });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        navigate("/cart");
+    };
 
-        localStorage.setItem('cart', JSON.stringify(cart));
-        navigate('/cart'); // Navigate to the Cart page after adding to cart
+    const addReview = () => {
+        if (newReview.trim() && newReviewer.trim()) {
+            setReviews([...reviews, { name: newReviewer, rating: newRating, text: newReview }]);
+            setNewReview('');
+            setNewReviewer('');
+            setNewRating(5);
+        }
     };
 
     return (
-        <div className="min-h-screen bg-yellow-50 p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-                {/* Heading for Product Details */}
-                <h1 className="text-3xl font-bold mb-6 text-center">Product Details</h1>
-
-                {/* Product Name */}
-                <h2 className="text-2xl font-semibold mb-4 text-center">{product.name}</h2>
-
-                {/* Product Image */}
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-60 object-cover rounded-lg mb-4"
-                />
-
-                {/* Product Description */}
-                <p className="text-lg text-gray-700 mb-4">{product.description}</p>
-
-                {/* Product Price */}
-                <p className="text-xl font-bold text-center mb-6">₹{product.price}</p>
-
-                {/* Add to Cart button */}
-                <div className="mt-4 text-center">
-                    <button onClick={addToCart} className="bg-yellow-500 text-white p-3 rounded-lg flex items-center space-x-2 justify-center mx-auto w-3/4">
-                        <FaShoppingCart /> {/* Shopping cart icon */}
-                        <span>Add to Cart</span>
-                    </button>
-                </div>
+        <div className="min-h-screen bg-gradient-to-r from-yellow-400 to-orange-500 p-6 flex flex-col items-center">
+            <div className="w-full max-w-4xl bg-white/80 backdrop-blur-lg p-6 rounded-lg shadow-xl flex flex-col">
+                <h1 className="text-3xl font-bold text-yellow-600 text-center">{product.name}</h1>
+                <img src={product.image} alt={product.name} className="w-full h-96 object-cover rounded-lg mt-4 shadow-md" />
+                <p className="text-xl font-bold text-gray-800 text-center mt-4">Price: ₹{product.price}</p>
+                <button onClick={addToCart} className="bg-yellow-500 text-white p-3 rounded-lg w-full hover:bg-yellow-600 transition mt-4 flex items-center justify-center">
+                    <FaShoppingCart className="text-lg mr-2" /> Add to Cart
+                </button>
+                <h3 className="text-2xl font-bold text-yellow-600 mt-6">User Reviews</h3>
+                <input type="text" className="border p-2 w-full mb-2 rounded-lg mt-2" placeholder="Your Name" value={newReviewer} onChange={(e) => setNewReviewer(e.target.value)} />
+                <input type="number" className="border p-2 w-full mb-2 rounded-lg" min="1" max="5" value={newRating} onChange={(e) => setNewRating(parseInt(e.target.value))} />
+                <input type="text" className="border p-2 w-full mb-2 rounded-lg" placeholder="Write a review..." value={newReview} onChange={(e) => setNewReview(e.target.value)} />
+                <button onClick={addReview} className="bg-green-500 text-white p-2 rounded-lg w-full hover:bg-green-600 transition">Submit Review</button>
+                <ul className="mt-4">
+                    {(showAllReviews ? reviews : reviews.slice(0, 3)).map((review, index) => (
+                        <li key={index} className="bg-white p-4 rounded-lg shadow-md mb-2">
+                            <span className="font-bold text-gray-800">{review.name} - {"⭐".repeat(review.rating)}</span>
+                            <p className="text-gray-700 mt-1">{review.text}</p>
+                        </li>
+                    ))}
+                </ul>
+                {!showAllReviews && reviews.length > 3 && (
+                    <button onClick={() => setShowAllReviews(true)} className="text-blue-600 hover:underline mt-2">See More</button>
+                )}
             </div>
         </div>
     );
