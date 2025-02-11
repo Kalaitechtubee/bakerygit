@@ -89,36 +89,39 @@ const Home = () => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
             <Navbar />
-            <div className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 py-24 text-white text-center shadow-lg">
-                <h1 className="text-6xl font-extrabold tracking-wide">Welcome to DD's Bakery</h1>
-                <p className="text-xl mt-4">Delicious treats baked with love</p>
+            {/* Hero Section */}
+            <div className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 py-16 sm:py-24 text-white text-center shadow-lg">
+                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide">Welcome to DD's Bakery</h1>
+                <p className="text-lg sm:text-xl mt-4">Delicious treats baked with love</p>
             </div>
 
             {/* Advertisement Section */}
-            <div className="bg-yellow-100 p-8 text-center">
+            <div className="bg-yellow-100 p-6 sm:p-8 text-center">
                 <div className="max-w-4xl mx-auto">
-                    <h2 className="text-4xl font-bold text-yellow-800 flex items-center justify-center">
+                    <h2 className="text-2xl sm:text-4xl font-bold text-yellow-800 flex items-center justify-center">
                         🎉 <FaTag className="mx-2" /> FLAT 10% OFF ON ALL ITEMS! 🎉
                     </h2>
-                    <p className="text-xl text-yellow-700 mt-4">Hurry up! Offer valid for a limited time only. 🕒</p>
+                    <p className="text-lg sm:text-xl text-yellow-700 mt-4">Hurry up! Offer valid for a limited time only. 🕒</p>
                 </div>
             </div>
 
-            <div className="container mx-auto p-8">
-                <div className="flex flex-wrap justify-center gap-6 my-8">
+            {/* Category Filters */}
+            <div className="container mx-auto p-4 sm:p-8">
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 my-6 sm:my-8">
                     {categories.map(category => (
                         <button
                             key={category.name}
                             onClick={() => handleCategoryFilter(category.name)}
-                            className={`flex items-center space-x-3 px-6 py-3 rounded-lg shadow-md transition-all duration-300 ${activeCategory === category.name ? `${category.bgColor} text-black scale-105` : 'bg-gray-300 text-gray-700 hover:bg-gray-400 hover:scale-105'}`}
+                            className={`flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md transition-all duration-300 ${activeCategory === category.name ? `${category.bgColor} text-black scale-105` : 'bg-gray-300 text-gray-700 hover:bg-gray-400 hover:scale-105'}`}
                         >
                             {category.icon}
-                            <span className="font-semibold text-lg">{category.label}</span>
+                            <span className="font-semibold text-sm sm:text-lg">{category.label}</span>
                         </button>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {/* Product Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {discountedProducts.map(item => (
                         <ProductCard key={item.id} item={item} />
                     ))}
