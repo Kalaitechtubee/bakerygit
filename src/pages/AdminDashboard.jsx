@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaSignOutAlt, FaEdit, FaTrash, FaUser, FaShoppingCart } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -57,6 +57,11 @@ const AdminDashboard = () => {
       localStorage.setItem("users", JSON.stringify(updatedUsers));
     }
     setShowEditModal(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditItem({ ...editItem, [name]: value });
   };
 
   return (
@@ -144,6 +149,80 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Edit {modalType === "order" ? "Order" : "User"}</h2>
+            {modalType === "order" ? (
+              <div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Order ID</label>
+                  <input
+                    type="text"
+                    name="id"
+                    value={editItem.id}
+                    className="w-full p-2 border rounded"
+                    disabled
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Total Amount</label>
+                  <input
+                    type="text"
+                    name="totalAmount"
+                    value={editItem.totalAmount}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Status</label>
+                  <input
+                    type="text"
+                    name="status"
+                    value={editItem.status}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Username</label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={editItem.username}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={editItem.email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setShowEditModal(false)} className="bg-gray-500 text-white px-4 py-2 rounded">
+                Cancel
+              </button>
+              <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

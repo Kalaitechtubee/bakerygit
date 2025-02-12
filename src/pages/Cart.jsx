@@ -64,21 +64,21 @@ const Cart = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-yellow-400 to-orange-500 flex flex-col items-center p-6">
-            <h1 className="text-4xl font-bold text-white mb-6 flex items-center">
+        <div className="min-h-screen bg-gradient-to-r from-yellow-400 to-orange-500 flex flex-col items-center p-4 sm:p-6">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6 flex items-center">
                 <FaShoppingCart className="mr-2" /> Your Cart
             </h1>
 
             {cartItems.length === 0 ? (
                 <p className="text-white text-lg font-semibold">🛒 Your cart is empty.</p>
             ) : (
-                <div className="max-w-3xl w-full bg-white/80 backdrop-blur-lg p-6 rounded-lg shadow-xl">
+                <div className="max-w-3xl w-full bg-white/80 backdrop-blur-lg p-4 sm:p-6 rounded-lg shadow-xl">
                     <div className="space-y-4">
                         {cartItems.map((item) => (
-                            <div key={item.id} className="bg-white p-4 rounded-lg shadow-md flex flex-col">
-                                <div className="flex items-center justify-between">
+                            <div key={item.id} className="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col">
+                                <div className="flex flex-col sm:flex-row items-center sm:justify-between space-y-4 sm:space-y-0">
                                     <div className="flex items-center space-x-4">
-                                        <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
+                                        <img src={item.image} alt={item.name} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg" />
                                         <div>
                                             <h2 className="text-lg font-bold text-gray-800">{item.name}</h2>
                                             <p className="text-gray-600">Base Price: ₹{item.price}</p>
@@ -127,7 +127,7 @@ const Cart = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="sticky bottom-0 bg-white p-4 mt-6 rounded-lg shadow-md">
+                    <div className="bg-white p-4 mt-6 rounded-lg shadow-md">
                         <div className="flex justify-between items-center text-lg font-semibold">
                             <span>Subtotal:</span>
                             <span className="text-yellow-600">₹{subtotal.toFixed(2)}</span>
